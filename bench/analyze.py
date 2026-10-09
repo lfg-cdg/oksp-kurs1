@@ -14,9 +14,14 @@ from matplotlib.ticker import FuncFormatter  # noqa: E402
 RES = Path(__file__).resolve().parent / "results"
 BLUE, ORANGE = "#2a78d6", "#eb6834"
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
-# Операции, у которых время в базе не зависит от объёма (только запросы по
-# первичному ключу или вовсе без базы), из дальнейшего рассмотрения исключаются.
-EXCLUDED = {"POST /api/login", "POST /api/logout", "POST /api/loans/{id}/return"}
+# Операции, чья медиана при росте данных выросла меньше чем в 1,5 раза, из
+# дальнейшего рассмотрения исключаются (порог выбран по разбросу повторных серий).
+GROWTH_THRESHOLD = 1.5
+
+
+def excluded(small, work):
+    return {n for n in small["operations"]
+            if work["operations"][n]["p50"] / small["operations"][n]["p50"] < GROWTH_THRESHOLD}
 
 
 def load():
@@ -31,6 +36,7 @@ def fmt(x):
 
 def tables(small, work):
     s_ops, w_ops = small["operations"], work["operations"]
+    EXCLUDED = excluded(small, work)
     lines = ["| Операция | p50 малое | p95 малое | max малое | p50 рабочее | p95 рабочее | max рабочее | Рост p50 |",
              "|---|---|---|---|---|---|---|---|"]
     for name in s_ops:
@@ -89,8 +95,9 @@ def chart_response(small, work):
     plt.close(fig)
 
 
-def chart_split(work):
-    ops = {n: v for n, v in work["operations"].items() if n not in EXCLUDED}
+def chart_split(small, work):
+    skip = excluded(small, work)
+    ops = {n: v for n, v in work["operations"].items() if n not in skip}
     names = sorted(ops, key=lambda n: ops[n]["p50"])
     db = [ops[n]["db_p50"] for n in names]
     code = [ops[n]["p50"] - ops[n]["db_p50"] for n in names]
@@ -117,5 +124,6 @@ if __name__ == "__main__":
     small, work = load()
     tables(small, work)
     chart_response(small, work)
-    chart_split(work)
+    chart_split(small, work)
+    print('Исключены:', sorted(excluded(small, work)))
     print("Графики: results/response_time.png, results/db_split.png")
