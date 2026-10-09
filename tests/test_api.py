@@ -81,7 +81,9 @@ def test_issue_busy_copy_returns_409(auth_client):
 
 
 def test_issue_to_reader_with_overdue_returns_409(auth_client):
-    response = auth_client.post("/api/loans", json={"reader_id": 2, "copy_id": 4})
+    # У читателя 2 просрочка 5 дней, экземпляр 4 свободен.
+    response = auth_client.post("/api/loans",
+                                json={"reader_id": 2, "copy_id": 4})
     assert response.status_code == 409
     assert response.get_json()["error"] == "reader_has_overdue"
 

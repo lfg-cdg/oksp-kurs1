@@ -15,8 +15,9 @@ def test_returned_on_time_has_no_overdue_and_no_fine():
 
 
 def test_fine_is_ten_rubles_per_overdue_day():
-    assert rules.overdue_days(DUE, date(2026, 10, 8), today=date(2026, 10, 9)) == 7
-    assert rules.fine_for(DUE, date(2026, 10, 8), today=date(2026, 10, 9)) == Decimal("70.00")
+    returned = date(2026, 10, 8)  # срок возврата DUE = 2026-10-01
+    assert rules.overdue_days(DUE, returned, today=returned) == 7
+    assert rules.fine_for(DUE, returned, today=returned) == Decimal("70.00")
 
 
 def test_overdue_of_book_on_hand_is_counted_to_today():
