@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Выдать экземпляр{% endblock %}
+{% block content %}
+<h1>Выдать экземпляр</h1>
+{% if error %}<div class="error">Выдача отклонена: {{ error }}</div>{% endif %}
+<form method="post">
+  <p><label>Читатель (id) <input name="reader_id" value="{{ form.reader_id }}"></label>
+     <a href="{{ url_for('web.readers') }}">найти</a></p>
+  <p><label>Экземпляр (id) <input name="copy_id" value="{{ form.copy_id }}"></label>
+     <a href="{{ url_for('web.books') }}">найти</a></p>
+  <p><label>Срок, дней <input name="days" value="{{ form.days }}" size="4"></label></p>
+  <button>Выдать</button>
+</form>
+{% endblock %}

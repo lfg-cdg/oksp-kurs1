@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Сводка{% endblock %}
+{% block content %}
+<h1>Сводка на {{ s.date }}</h1>
+<div class="cards">
+  <div class="card">Экземпляров в фонде<div class="num">{{ s.copies_total }}</div></div>
+  <div class="card">На руках<div class="num">{{ s.on_hand }}</div></div>
+  <div class="card">Из них просрочено<div class="num">{{ s.overdue }}</div>{{ "%.1f"|format(s.overdue_share * 100) }} % от выданных</div>
+  <div class="card">Начислено штрафов по текущим просрочкам, ₽<div class="num">{{ s.fines_accrued }}</div></div>
+</div>
+<h2>Чаще всего берут</h2>
+<table><tr><th>#</th><th>Книга</th><th>Автор</th><th>Выдач</th></tr>
+{% for b in s.top_books %}
+<tr><td>{{ loop.index }}</td><td><a href="{{ url_for('web.book', book_id=b.id) }}">{{ b.title }}</a></td><td>{{ b.author }}</td><td>{{ b.loans }}</td></tr>
+{% endfor %}</table>
+{% endblock %}

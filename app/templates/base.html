@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Библиотека{% endblock %} · {{ PREFIX }}</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; color: #1d1d1f; background: #f6f6f4; }
+  header { background: #22313f; color: #fff; padding: 10px 24px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  header a { color: #dfe7ee; text-decoration: none; }
+  header a:hover { color: #fff; }
+  header .brand { font-weight: 600; color: #fff; }
+  header .user { margin-left: auto; font-size: 14px; display: flex; gap: 10px; align-items: center; }
+  main { max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  th, td { border-bottom: 1px solid #e3e3e0; padding: 6px 8px; text-align: left; font-size: 14px; }
+  th { background: #eef0f2; }
+  .tag { padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .tag.active { background: #e3f1e6; } .tag.overdue { background: #fbe1df; color: #8b1a10; }
+  .tag.returned { background: #eceff1; } .tag.free { background: #e3ecf8; }
+  .flash { background: #e3f1e6; padding: 8px 12px; margin-bottom: 12px; }
+  .error { background: #fbe1df; padding: 8px 12px; margin-bottom: 12px; }
+  form.inline { display: inline; }
+  .filters { margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .pager { margin: 12px 0; display: flex; gap: 12px; align-items: center; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .card { background: #fff; padding: 12px 16px; border: 1px solid #e3e3e0; }
+  .card .num { font-size: 28px; font-weight: 600; }
+  footer { color: #888; font-size: 12px; text-align: center; margin: 24px 0; }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Библиотека</span>
+  {% if session.user_id %}
+  <a href="{{ url_for('web.loans') }}">Выдачи</a>
+  <a href="{{ url_for('web.loan_new') }}">Выдать</a>
+  <a href="{{ url_for('web.readers') }}">Читатели</a>
+  <a href="{{ url_for('web.books') }}">Книги</a>
+  <a href="{{ url_for('web.summary') }}">Сводка</a>
+  <span class="user">{{ session.user_name }}
+    <form class="inline" method="post" action="{{ url_for('web.logout') }}"><button>Выйти</button></form></span>
+  {% endif %}
+</header>
+<main>
+  {% for m in get_flashed_messages() %}<div class="flash">{{ m }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+<footer>{{ PREFIX }} · ОКСП 2026 · вариант 1</footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{% macro pager(data, endpoint) -%}
+{% set pages = ((data.total + data.size - 1) // data.size) or 1 %}
+<div class="pager">
+  {% if data.page > 1 %}<a href="{{ url_for(endpoint, page=data.page - 1, **kwargs) }}">← назад</a>{% endif %}
+  <span>Страница {{ data.page }} из {{ pages }} · всего {{ data.total }}</span>
+  {% if data.page < pages %}<a href="{{ url_for(endpoint, page=data.page + 1, **kwargs) }}">вперёд →</a>{% endif %}
+</div>
+{%- endmacro %}
+{% macro status(s) -%}<span class="tag {{ s }}">{{ STATUS_LABELS[s] }}</span>{%- endmacro %}

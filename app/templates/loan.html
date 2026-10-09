@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% from "_macros.html" import status as st with context %}
+{% block title %}Выдача {{ loan.id }}{% endblock %}
+{% block content %}
+<h1>Выдача № {{ loan.id }} {{ st(loan.status) }}</h1>
+<div class="cards">
+  <div class="card"><b>Книга</b><br><a href="{{ url_for('web.book', book_id=loan.book.id) }}">{{ loan.book.title }}</a><br>
+    {{ loan.book.author }}, {{ loan.book.year }}<br><small>ISBN {{ loan.book.isbn }}</small></div>
+  <div class="card"><b>Экземпляр</b><br>инв. № {{ loan.copy.inventory_number }}<br>полка {{ loan.copy.shelf }}</div>
+  <div class="card"><b>Читатель</b><br><a href="{{ url_for('web.reader', reader_id=loan.reader.id) }}">{{ loan.reader.full_name }}</a><br>
+    билет {{ loan.reader.card_number }}<br>{{ loan.reader.email }} · {{ loan.reader.phone }}</div>
+  <div class="card"><b>Сроки</b><br>выдана {{ loan.issued_at }}<br>вернуть до {{ loan.due_at }}<br>
+    возвращена {{ loan.returned_at or "—" }}<br>просрочка {{ loan.overdue_days }} дн. · штраф {{ loan.fine }} ₽</div>
+</div>
+{% if not loan.returned_at %}
+<form method="post" action="{{ url_for('web.loan_return', loan_id=loan.id) }}"><button>Принять возврат сегодня</button></form>
+{% endif %}
+<h2>Ещё на руках у читателя</h2>
+<table>
+  <tr><th>№</th><th>Книга</th><th>Срок</th><th>Статус</th></tr>
+  {% for l in loan.reader_on_hand %}
+  <tr><td><a href="{{ url_for('web.loan', loan_id=l.id) }}">{{ l.id }}</a></td><td>{{ l.book.title }}</td><td>{{ l.due_at }}</td><td>{{ st(l.status) }}</td></tr>
+  {% else %}<tr><td colspan="4">Нет</td></tr>{% endfor %}
+</table>
+{% endblock %}

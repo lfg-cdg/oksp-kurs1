@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% from "_macros.html" import pager with context %}
+{% block title %}Читатели{% endblock %}
+{% block content %}
+<h1>Читатели</h1>
+<form class="filters"><input name="q" value="{{ q }}" placeholder="ФИО или билет"><button>Найти</button></form>
+<table><tr><th>id</th><th>ФИО</th><th>Билет</th><th>Почта</th></tr>
+{% for r in data["items"] %}
+<tr><td>{{ r.id }}</td><td><a href="{{ url_for('web.reader', reader_id=r.id) }}">{{ r.full_name }}</a></td><td>{{ r.card_number }}</td><td>{{ r.email }}</td></tr>
+{% endfor %}</table>
+{{ pager(data, "web.readers", q=q) }}
+{% endblock %}

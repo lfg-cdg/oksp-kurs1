@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% from "_macros.html" import pager, status as st with context %}
+{% block title %}Выдачи{% endblock %}
+{% block content %}
+<h1>Выдачи</h1>
+<form class="filters" method="get">
+  <select name="status">
+    <option value="">все</option>
+    {% for s in ["on_hand", "active", "overdue", "returned"] %}
+    <option value="{{ s }}" {{ "selected" if s == status }}>{{ STATUS_LABELS[s] }}</option>{% endfor %}
+  </select>
+  <input name="q" value="{{ q }}" placeholder="читатель или название">
+  <button>Найти</button>
+</form>
+<table>
+  <tr><th>№</th><th>Книга</th><th>Экз.</th><th>Читатель</th><th>Выдана</th><th>Срок</th><th>Возврат</th><th>Статус</th><th>Штраф, ₽</th></tr>
+  {% for l in data["items"] %}
+  <tr>
+    <td><a href="{{ url_for('web.loan', loan_id=l.id) }}">{{ l.id }}</a></td>
+    <td><a href="{{ url_for('web.book', book_id=l.book.id) }}">{{ l.book.title }}</a><br><small>{{ l.book.author }}</small></td>
+    <td>{{ l.copy.inventory_number }}</td>
+    <td><a href="{{ url_for('web.reader', reader_id=l.reader.id) }}">{{ l.reader.full_name }}</a></td>
+    <td>{{ l.issued_at }}</td><td>{{ l.due_at }}</td><td>{{ l.returned_at or "—" }}</td>
+    <td>{{ st(l.status) }}</td><td>{{ l.fine }}</td>
+  </tr>
+  {% else %}<tr><td colspan="9">Ничего не найдено</td></tr>{% endfor %}
+</table>
+{{ pager(data, "web.loans", status=status, q=q) }}
+{% endblock %}

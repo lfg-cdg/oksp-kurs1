@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% from "_macros.html" import status as st with context %}
+{% block title %}{{ reader.full_name }}{% endblock %}
+{% block content %}
+<h1>{{ reader.full_name }}</h1>
+<p>Билет {{ reader.card_number }} · {{ reader.email }} · {{ reader.phone }} · с {{ reader.registered_at }}</p>
+<div class="cards">
+  <div class="card">На руках<div class="num">{{ reader.on_hand }}</div></div>
+  <div class="card">Просрочено<div class="num">{{ reader.overdue }}</div></div>
+  <div class="card">Штрафы всего, ₽<div class="num">{{ reader.fines_total }}</div></div>
+  <div class="card">Можно выдать<div class="num">{{ "да" if reader.can_borrow else "нет" }}</div>
+    {% if reader.can_borrow %}<a href="{{ url_for('web.loan_new', reader_id=reader.id) }}">выдать книгу</a>{% endif %}</div>
+</div>
+<h2>История выдач</h2>
+<table><tr><th>№</th><th>Книга</th><th>Выдана</th><th>Срок</th><th>Возврат</th><th>Статус</th><th>Штраф, ₽</th></tr>
+{% for l in reader.loans %}
+<tr><td><a href="{{ url_for('web.loan', loan_id=l.id) }}">{{ l.id }}</a></td><td>{{ l.book.title }}</td><td>{{ l.issued_at }}</td><td>{{ l.due_at }}</td>
+<td>{{ l.returned_at or "—" }}</td><td>{{ st(l.status) }}</td><td>{{ l.fine }}</td></tr>
+{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% from "_macros.html" import status as st with context %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+<h1>{{ book.title }}</h1>
+<p>{{ book.author }}, {{ book.year }} · ISBN {{ book.isbn }} · выдавалась {{ book.times_loaned }} раз</p>
+<table><tr><th>Экземпляр</th><th>Полка</th><th>Статус</th><th>Читатель</th><th>Срок</th><th></th></tr>
+{% for c in book.copies %}
+<tr><td>{{ c.inventory_number }} (id {{ c.id }})</td><td>{{ c.shelf }}</td><td>{{ st(c.status) }}</td>
+<td>{% if c.reader %}<a href="{{ url_for('web.reader', reader_id=c.reader.id) }}">{{ c.reader.full_name }}</a>{% endif %}</td>
+<td>{{ c.due_at or "" }}</td>
+<td>{% if c.status == "free" %}<a href="{{ url_for('web.loan_new', copy_id=c.id) }}">выдать</a>{% else %}<a href="{{ url_for('web.loan', loan_id=c.loan_id) }}">выдача</a>{% endif %}</td></tr>
+{% endfor %}</table>
+{% endblock %}
