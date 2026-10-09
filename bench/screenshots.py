@@ -1,5 +1,9 @@
+"""Снимки экранов для отчёта. Сервис должен быть запущен: ./bench/server.sh start"""
+from pathlib import Path
+
 from playwright.sync_api import sync_playwright
-out = "/home/claude/library/docs/img/"
+
+out = str(Path(__file__).resolve().parent.parent / "docs" / "img") + "/"
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={"width": 1280, "height": 860}, device_scale_factor=1.5)
