@@ -5,7 +5,7 @@
 <div class="cards">
   <div class="card"><b>Книга</b><br><a href="{{ url_for('web.book', book_id=loan.book.id) }}">{{ loan.book.title }}</a><br>
     {{ loan.book.author }}, {{ loan.book.year }}<br><small>ISBN {{ loan.book.isbn }}</small></div>
-  <div class="card"><b>Экземпляр</b><br>инв. № {{ loan.copy.inventory_number }}<br>полка {{ loan.copy.shelf }}</div>
+  <div class="card"><b>Экземпляр</b><br>инв. № {{ loan["copy"].inventory_number }}<br>полка {{ loan["copy"].shelf }}</div>
   <div class="card"><b>Читатель</b><br><a href="{{ url_for('web.reader', reader_id=loan.reader.id) }}">{{ loan.reader.full_name }}</a><br>
     билет {{ loan.reader.card_number }}<br>{{ loan.reader.email }} · {{ loan.reader.phone }}</div>
   <div class="card"><b>Сроки</b><br>выдана {{ loan.issued_at }}<br>вернуть до {{ loan.due_at }}<br>

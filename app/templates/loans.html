@@ -17,7 +17,7 @@
   <tr>
     <td><a href="{{ url_for('web.loan', loan_id=l.id) }}">{{ l.id }}</a></td>
     <td><a href="{{ url_for('web.book', book_id=l.book.id) }}">{{ l.book.title }}</a><br><small>{{ l.book.author }}</small></td>
-    <td>{{ l.copy.inventory_number }}</td>
+    <td>{{ l["copy"].inventory_number }}</td>
     <td><a href="{{ url_for('web.reader', reader_id=l.reader.id) }}">{{ l.reader.full_name }}</a></td>
     <td>{{ l.issued_at }}</td><td>{{ l.due_at }}</td><td>{{ l.returned_at or "—" }}</td>
     <td>{{ st(l.status) }}</td><td>{{ l.fine }}</td>
